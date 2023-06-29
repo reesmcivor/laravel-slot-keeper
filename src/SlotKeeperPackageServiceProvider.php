@@ -14,7 +14,7 @@ class SlotKeeperPackageServiceProvider extends ServiceProvider
             $this->publishes([
                 __DIR__ . '/../publish/config' => base_path('config'),
                 __DIR__ . '/../database/migrations' => database_path('migrations'),
-                __DIR__ . '/../publish/tests' => base_path('tests/Auth'),
+                __DIR__ . '/../publish/tests' => base_path('tests/SlotKeeper'),
             ], 'laravel-slot-keeper');
         }
 
