@@ -17,10 +17,8 @@ class CreateSlotController extends Controller
             'model' => config('slot-keeper.model.' . $request->model),
             'query' => $request->slot,
             'released_at' => now()->addMinutes(15),
-        ])
+        ]);
 
-        return $status === Password::RESET_LINK_SENT
-            ? response()->json(['message' => 'Password reset email sent'])
-            : response()->json(['message' => 'Unable to send password reset email'], 500);
+        return response()->json(['message' => 'Created slot']);
     }
 }
