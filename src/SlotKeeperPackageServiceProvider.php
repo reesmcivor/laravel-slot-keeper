@@ -1,6 +1,6 @@
 <?php
 
-namespace ReesMcIvor\Auth;
+namespace ReesMcIvor\SlotKeeper;
 
 use Illuminate\Support\ServiceProvider;
 
