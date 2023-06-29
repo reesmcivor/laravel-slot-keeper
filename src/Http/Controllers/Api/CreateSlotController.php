@@ -1,6 +1,6 @@
 <?php
 
-namespace ReesMcIvor\Auth\Http\Controllers\Api;
+namespace ReesMcIvor\SlotKeeper\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
