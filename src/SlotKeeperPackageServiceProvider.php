@@ -3,6 +3,7 @@
 namespace ReesMcIvor\SlotKeeper;
 
 use Illuminate\Support\ServiceProvider;
+use ReesMcIvor\SlotKeeper\Console\Commands\ReleaseSlotKeepers;
 
 class SlotKeeperPackageServiceProvider extends ServiceProvider
 {
@@ -18,9 +19,13 @@ class SlotKeeperPackageServiceProvider extends ServiceProvider
             ], 'laravel-slot-keeper');
         }
 
+
         $this->loadRoutesFrom(__DIR__.'/routes/api.php');
         $this->loadViewsFrom(__DIR__.'/resources/views', 'slot-keeper');
 
+        $this->commands([
+            ReleaseSlotKeepers::class
+        ]);
     }
 
     private function modulePath($path)

@@ -16,6 +16,7 @@ class Slot extends Model
 
     protected $fillable = ['start', 'finish'];
 
+    protected int $releastAfterSeconds = 60 * 15;
     protected bool $shouldCheckSlotKeeper = true;
     protected array $slotKeeperAttributes = ['start', 'finish'];
 

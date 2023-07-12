@@ -25,6 +25,11 @@ trait HasSlotKeeper
         });
     }
 
+    public function getReleaseTime()
+    {
+        return $this->created_at->addSeconds($this->releastAfterSeconds);
+    }
+
     public function shouldCheckSlotKeeper() : bool
     {
         return $this->shouldCheckSlotKeeper;
@@ -34,7 +39,11 @@ trait HasSlotKeeper
     {
         if($this->shouldCheckSlotKeeper()) {
             $slotKeeperHash = $this->getSlotKeeperAttributesHash();
-            if (SlotKeeper::where('query_hashed', $slotKeeperHash)->where('slot_keeperable_type', get_class($this))->exists()) {
+            if (SlotKeeper
+                ::where('query_hashed', $slotKeeperHash)
+                ->whereNull('released_at')
+                ->where('slot_keeperable_type', get_class($this))->exists()
+            ) {
                 throw new SlotAlreadyTaken("Slot already exists");
             }
         }

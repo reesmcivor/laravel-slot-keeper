@@ -6,16 +6,17 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-
-    public function up(): void
+    public function up()
     {
-        Schema::create('tenant_users', function (Blueprint $table) {
+        Schema::create('slots', function (Blueprint $table) {
             $table->id();
-            $table->uuid('tenant_id');
-            $table->unsignedBigInteger('user_id');
-            $table->string('email');
+            $table->dateTime('start');
+            $table->dateTime('finish');
             $table->timestamps();
         });
     }
-
+    public function down()
+    {
+        Schema::dropIfExists('slots');
+    }
 };

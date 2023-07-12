@@ -23,6 +23,28 @@ class SlotKeeper extends Model
         'released_at' => 'datetime',
     ];
 
+    public function release()
+    {
+        $this->update([
+            'released_at' => now()
+        ]);
+    }
+
+    public function scopeReleasable( $query )
+    {
+        return $query->whereNull('released_at');
+    }
+
+    public function scopeReleased( $query )
+    {
+        return $query->whereNotNull('released_at');
+    }
+
+    public function slotKeeperable()
+    {
+        return $this->morphTo();
+    }
+
     protected static function newFactory()
     {
         return new SlotKeeperFactory();
