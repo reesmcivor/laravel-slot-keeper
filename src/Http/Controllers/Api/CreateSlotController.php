@@ -7,17 +7,22 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
 use ReesMcIvor\SlotKeeper\Http\Requests\Api\CreateSlotRequest;
+use ReesMcIvor\SlotKeeper\Models\Slot;
 use ReesMcIvor\SlotKeeper\Models\SlotKeeper;
 
 class CreateSlotController extends Controller
 {
     public function __invoke(CreateSlotRequest $request)
     {
-        SlotKeeper::create([
-            'model' => config('slot-keeper.model.' . $request->model),
-            'query' => $request->slot,
-            'released_at' => now()->addMinutes(15),
-        ]);
+        try {
+            $modelClass = config('slot-keeper.models.' . $request->get('model') ?? 'default');
+            $model = app($modelClass)->fill($request->get('query'));
+            $model->save();
+            $model->createSlotKeeper();
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json(['message' => 'Slot already taken'], 422);
+        }
 
         return response()->json(['message' => 'Created slot']);
     }

@@ -20,6 +20,7 @@ class SlotKeeperPackageServiceProvider extends ServiceProvider
 
         $this->loadRoutesFrom(__DIR__.'/routes/api.php');
         $this->loadViewsFrom(__DIR__.'/resources/views', 'slot-keeper');
+
     }
 
     private function modulePath($path)

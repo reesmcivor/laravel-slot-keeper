@@ -14,8 +14,8 @@ class CreateSlotRequest extends FormRequest
     public function rules()
     {
         return [
-            'model' => 'required|in:' . explode(",", config('slot-keeper.models')),
-            'slot' => 'required',
+            'model' => 'required|in:' . implode(",", array_keys(config('slot-keeper.models'))),
+            'query' => 'required',
         ];
     }
 }
