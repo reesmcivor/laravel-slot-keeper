@@ -5,6 +5,7 @@ namespace ReesMcIvor\SlotKeeper\Traits;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Support\Facades\Log;
 use ReesMcIvor\SlotKeeper\Exceptions\InvalidSlotKeeperAttributes;
 use ReesMcIvor\SlotKeeper\Exceptions\SlotAlreadyTaken;
 use ReesMcIvor\SlotKeeper\Models\SlotKeeper;
@@ -23,6 +24,14 @@ trait HasSlotKeeper
         static::saving(function ($model) {
             $model->checkSlotKeeper();
         });
+
+        static::created(function ($model) {
+            $model->createSlotKeeper();
+        });
+
+        static::deleted(function ($model) {
+            $model->slotKeepers()->delete();
+        });
     }
 
     public function getReleaseTime()
@@ -38,7 +47,7 @@ trait HasSlotKeeper
     public function checkSlotKeeper()
     {
         if($this->shouldCheckSlotKeeper()) {
-            $slotKeeperHash = $this->getSlotKeeperAttributesHash();
+            $slotKeeperHash = $this->getSlotKeeperAttributesHashed();
             if (SlotKeeper
                 ::where('query_hashed', $slotKeeperHash)
                 ->whereNull('released_at')
@@ -60,8 +69,8 @@ trait HasSlotKeeper
     public function createSlotKeeper()
     {
         $data = [
-            'query' => $this->getSlotKeeperAttributes(),
-            'query_hashed' => $this->getSlotKeeperAttributesHash(),
+            'query' => $this->getSlotKeeperQuery(),
+            'query_hashed' => $this->getSlotKeeperAttributesHashed(),
             'slot_keeperable_type' => get_class($this)
         ];
 
@@ -77,11 +86,11 @@ trait HasSlotKeeper
     {
         return $this
             ->slotKeepers()
-            ->where('query_hashed', $this->getSlotKeeperAttributesHash())
+            ->where('query_hashed', $this->getSlotKeeperAttributesHashed())
             ->exists();
     }
 
-    public function getSlotKeeperAttributesHash() : string
+    public function getSlotKeeperQuery() : array
     {
         $keysToCheck = array_flip($this->getSlotKeeperAttributes());
         $result = array_intersect_key($this->toArray(), $keysToCheck);
@@ -90,7 +99,12 @@ trait HasSlotKeeper
                 $result[$key] = $value->format('Y-m-d H:i:s');
             }
         }
-        return md5(json_encode($result));
+        return $result;
+    }
+
+    protected function getSlotKeeperAttributesHashed() : string
+    {
+        return md5(json_encode($this->getSlotKeeperQuery()));
     }
 
 }
