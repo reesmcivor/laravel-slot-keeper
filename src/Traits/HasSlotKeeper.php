@@ -34,6 +34,16 @@ trait HasSlotKeeper
         });
     }
 
+    public function hasBeenReleased()
+    {
+        return $this->slotKeepers()->whereNotNull('released_at')->exists();
+    }
+
+    public function getSecondsUntilReleaseTime()
+    {
+        return $this->getReleaseTime()->isFuture() ? $this->getReleaseTime()->diffInSeconds(now()) : 0;
+    }
+
     public function getReleaseTime()
     {
         return $this->created_at->addSeconds($this->releastAfterSeconds);
