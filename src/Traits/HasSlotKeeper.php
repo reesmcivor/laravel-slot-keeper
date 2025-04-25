@@ -41,7 +41,10 @@ trait HasSlotKeeper
 
     public function getSecondsUntilReleaseTime()
     {
-        return $this->getReleaseTime()->isFuture() ? $this->getReleaseTime()->diffInSeconds(now()) : 0;
+        $releaseTime = $this->getReleaseTime()->timezone('Europe/London');
+        $now = now('Europe/London');
+        $secondsUntilRelease = $now->diffInSeconds($releaseTime, false);
+        return max(0, $secondsUntilRelease);
     }
 
     public function getReleaseTime()
